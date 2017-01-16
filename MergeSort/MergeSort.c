@@ -66,7 +66,8 @@ int BottomUpMergeSort(char inputfile[], char outputfile[])
 //Merge two lists starting with fp1 and fp2
 void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
 {
-    unsigned int temp1,temp2,pos1=0,pos2=0,end1;
+    unsigned int pos1=0,pos2=0,end1;
+    int temp1,temp2;
     end1=ftell(fp2);
     while (ftell(fp3) < n*sizeof(int))
     {
@@ -100,7 +101,6 @@ FILE* OpenFile(char file[],char mode[] )
     if(fp == NULL)
     {
         printf("\nERROR: Unable to open File\n");
-        exit(1);
     }
     return fp;
 }
