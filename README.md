@@ -1,1 +1,3 @@
-# Myfiles
+# Assignments
+* Lab Assignments in Computer Science 
+* 
