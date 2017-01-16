@@ -23,6 +23,8 @@ void BottomUpMergeSort(char inputfile[], char outputfile[])
     int s=1,tempno,width,i=1,length;;
     fp1=OpenFile(inputfile,"rb+");
     fp3=OpenFile("temp.bin","wb+"); 
+    if(fp1==NULL && fp2 == NULL)
+        return 0;
     fseek(fp1,0,SEEK_END);
     length=(ftell(fp1)/sizeof (int));
     for(width=1;width<length;width=width*2)
@@ -31,6 +33,8 @@ void BottomUpMergeSort(char inputfile[], char outputfile[])
             fp2=OpenFile(inputfile,"rb+");
         else
             fp2=OpenFile(tempfile,"rb+");
+        if(fp2==NULL)
+            return 0;
         fseek( fp1, 0, SEEK_SET );
         fseek( fp2, width*(sizeof (int)), SEEK_SET );
         for(i=0;i<length;i=i+2*width)
@@ -49,10 +53,10 @@ void BottomUpMergeSort(char inputfile[], char outputfile[])
     fclose(fp3);
     remove("temp.bin");
     fseek(fp1,0,SEEK_SET);
-    fp4=OpenFile(outputfile,"wb+");
-    while (s) {
-        s=fread(&tempno,sizeof(int),1,fp1);
-        if(s)
+    fp4=OpenFile(outputfile,"w+");
+    if(fp4==NULL)
+        return 0;
+    while (fread(&tempno,sizeof(int),1,fp1)) {
             fprintf(fp4,"%d\n",tempno);
     }
     fclose(fp4);
@@ -61,15 +65,13 @@ void BottomUpMergeSort(char inputfile[], char outputfile[])
 //Merge two lists starting with fp1 and fp2
 void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
 {
-    unsigned int temp1,temp2,pos1=0,pos2=0,end1,s1,s2;
+    unsigned int temp1,temp2,pos1=0,pos2=0,end1;
     end1=ftell(fp2);
     while (ftell(fp3) < n*sizeof(int))
     {
-        s1=fread(&temp1,sizeof(int),1,fp1);
-        s2=fread(&temp2,sizeof(int),1,fp2);
-        if(s1)                  //to avoid the case of in which pointer reached the End Of FIle
+        if(fread(&temp1,sizeof(int),1,fp1))                  //to avoid the case of in which pointer reached the End Of FIle
             fseek(fp1,-sizeof (int),SEEK_CUR);
-        if(s2)                  //to avoid the case of in which pointer reached the End Of FIle
+        if(fread(&temp2,sizeof(int),1,fp2))                  //to avoid the case of in which pointer reached the End Of FIle
             fseek(fp2,-sizeof (int),SEEK_CUR);
         pos1=ftell(fp1);
         pos2=ftell(fp2);
@@ -100,5 +102,4 @@ FILE* OpenFile(char file[],char mode[] )
         exit(1);
     }
     return fp;
-
 }
