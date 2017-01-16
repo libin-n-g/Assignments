@@ -6,7 +6,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-void BottomUpMergeSort(char inputfile[], char outputfile[]);
+int BottomUpMergeSort(char inputfile[], char outputfile[]);
 void BottomUpMerge(FILE* fp1, FILE* fp2, FILE *fp3, int n);
 int min(int a,int b);
 FILE* OpenFile(char file[], char mode[]);//opens file and return pointer
@@ -16,14 +16,14 @@ int main()
     return 0;
 }
 // SortMerge function
-void BottomUpMergeSort(char inputfile[], char outputfile[])
+int BottomUpMergeSort(char inputfile[], char outputfile[])
 {
     FILE *fp3, *fp2, *fp1, *fp4,*temp;
     char tempfile[]="temp.bin";
     int s=1,tempno,width,i=1,length;;
     fp1=OpenFile(inputfile,"rb+");
     fp3=OpenFile("temp.bin","wb+"); 
-    if(fp1==NULL && fp2 == NULL)
+    if(fp1==NULL && fp3 == NULL)
         return 0;
     fseek(fp1,0,SEEK_END);
     length=(ftell(fp1)/sizeof (int));
@@ -61,6 +61,7 @@ void BottomUpMergeSort(char inputfile[], char outputfile[])
     }
     fclose(fp4);
     fclose(fp1);
+    return 1;
 }
 //Merge two lists starting with fp1 and fp2
 void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
