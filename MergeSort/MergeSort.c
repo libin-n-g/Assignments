@@ -1,12 +1,12 @@
 /* AUTHOR : LIBIN N GEORGE
- * Last Changed:14-01-2017
+ * Last Changed:17-01-2017
  * program Implementing merge-sort on the input file input.bin and stores sorted output in a
  * human readable form in the file output.txt.
 */
 #include<stdio.h>
 #include<stdlib.h>
 
-int BottomUpMergeSort(char inputfile[], char outputfile[]);
+void BottomUpMergeSort(char inputfile[], char outputfile[]);
 void BottomUpMerge(FILE* fp1, FILE* fp2, FILE *fp3, int n);
 int min(int a,int b);
 FILE* OpenFile(char file[], char mode[]);//opens file and return pointer
@@ -16,15 +16,18 @@ int main()
     return 0;
 }
 // SortMerge function
-int BottomUpMergeSort(char inputfile[], char outputfile[])
+void BottomUpMergeSort(char inputfile[], char outputfile[])
 {
     FILE *fp3, *fp2, *fp1, *fp4,*temp;
     char tempfile[]="temp.bin";
-    int s=1,tempno,width,i=1,length;;
+    int s=1,tempno,width=1,i=1,length;;
     fp1=OpenFile(inputfile,"rb+");
-    fp3=OpenFile("temp.bin","wb+"); 
-    if(fp1==NULL && fp3 == NULL)
-        return 0;
+    fp3=OpenFile(tempfile,"wb+");
+    if(fp1 == NULL || fp3 == NULL)
+    {
+    	remove(tempfile);
+    	return;
+    }
     fseek(fp1,0,SEEK_END);
     length=(ftell(fp1)/sizeof (int));
     for(width=1;width<length;width=width*2)
@@ -33,15 +36,17 @@ int BottomUpMergeSort(char inputfile[], char outputfile[])
             fp2=OpenFile(inputfile,"rb+");
         else
             fp2=OpenFile(tempfile,"rb+");
-        if(fp2==NULL)
-            return 0;
+        if(fp2 == NULL)
+    	{
+    		return;
+    	}
         fseek( fp1, 0, SEEK_SET );
         fseek( fp2, width*(sizeof (int)), SEEK_SET );
         for(i=0;i<length;i=i+2*width)
         {
             BottomUpMerge(fp1,fp2,fp3,min(i+2*width,length));
-            fseek(fp1,width*(sizeof (int)),SEEK_CUR);
-            fseek(fp2,width*(sizeof (int)),SEEK_CUR);
+            fseek(fp1,(width-1)*(sizeof (int)),SEEK_CUR);
+            fseek(fp2,(width-1)*(sizeof (int)),SEEK_CUR);
         }
         fseek( fp1, 0, SEEK_SET );
         temp=fp1;
@@ -51,17 +56,19 @@ int BottomUpMergeSort(char inputfile[], char outputfile[])
         fclose(fp2);
     }
     fclose(fp3);
-    remove("temp.bin");
+    remove(tempfile);
     fseek(fp1,0,SEEK_SET);
-    fp4=OpenFile(outputfile,"w+");
-    if(fp4==NULL)
-        return 0;
-    while (fread(&tempno,sizeof(int),1,fp1)) {
-            fprintf(fp4,"%d\n",tempno);
+    fp4=OpenFile(outputfile,"wb+");
+    if(fp4 == NULL)
+   	{
+   		return;
+   	}
+    while (fread(&tempno,sizeof(int),1,fp1)) 
+    {
+           fprintf(fp4,"%d\n",tempno);
     }
     fclose(fp4);
     fclose(fp1);
-    return 1;
 }
 //Merge two lists starting with fp1 and fp2
 void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
@@ -69,23 +76,35 @@ void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
     unsigned int pos1=0,pos2=0,end1;
     int temp1,temp2;
     end1=ftell(fp2);
+    fread(&temp1,sizeof(int),1,fp1);
+    fread(&temp2,sizeof(int),1,fp2);
     while (ftell(fp3) < n*sizeof(int))
     {
-        if(fread(&temp1,sizeof(int),1,fp1))                  //to avoid the case of in which pointer reached the End Of FIle
-            fseek(fp1,-sizeof (int),SEEK_CUR);
-        if(fread(&temp2,sizeof(int),1,fp2))                  //to avoid the case of in which pointer reached the End Of FIle
-            fseek(fp2,-sizeof (int),SEEK_CUR);
-        pos1=ftell(fp1);
-        pos2=ftell(fp2);
-        if (pos1<end1 && (pos2>=(n*sizeof(int)) || temp1 <= temp2))
+        if(!(feof(fp1)))
         {
-            fread(&temp1,sizeof(int),1,fp1);
-            fwrite(&temp1,sizeof (int),1,fp3);
+            pos1 = ftell(fp1) - sizeof(int);   //in case of not EOF
         }
         else
         {
-            fread(&temp2,sizeof(int),1,fp2);
+            pos1 = ftell(fp1);
+        }
+        if(!(feof(fp2)))
+        {
+            pos2 = ftell(fp2) - sizeof(int);     //in case of not EOF
+        }
+        else
+        {
+            pos2 = ftell(fp2);
+        }
+        if (pos1 < end1 && (pos2 >= (n*sizeof(int)) || temp1 <= temp2))
+        {
+            fwrite(&temp1,sizeof (int),1,fp3);
+            fread(&temp1,sizeof(int),1,fp1);
+        }
+        else
+        {
             fwrite(&temp2,sizeof (int),1,fp3);
+            fread(&temp2,sizeof(int),1,fp2);
         }
     }
 }
@@ -101,6 +120,8 @@ FILE* OpenFile(char file[],char mode[] )
     if(fp == NULL)
     {
         printf("\nERROR: Unable to open File\n");
+        return NULL;
     }
     return fp;
+
 }

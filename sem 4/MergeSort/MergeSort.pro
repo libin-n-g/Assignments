@@ -4,6 +4,5 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    MergeSort.c \
-    GenerateRandomNumberFile.c
+    MergeSort.c
 
