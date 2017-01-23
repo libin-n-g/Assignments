@@ -1,5 +1,5 @@
 /* AUTHOR : LIBIN N GEORGE
- * LAST CHANGED:23-1-2017
+ * LAST CHANGED:
  * Implement the divide and conquer algorithm for finding median of a list of n numbers in linear time.
  * Implement the partition function in-place (i.e., do not use separate L, C and R arrays).
  * You may use an additional array for storing the medians of each group of 5.
