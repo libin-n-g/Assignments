@@ -1,43 +1,153 @@
+
 #include <stdio.h>
-#define INF -1
+#include <limits.h>
+#define INF INT_MAX
+
 struct Vertex
 {
-    int VertexNo;
-    int List[50][2];
+    int VertexNumber;
+    struct list* Neigh;
+};
+typedef struct Vertex* Vertexptr;
+
+struct list
+{
+    struct Vertex* Neighbours;
+    struct list* Next;
+    int edgewt;
 };
 
-void CreateLinkedList(struct Vertex V[50],int NoOfNeibours,int index);
-void AddToList(int );
+typedef struct list* listptr;
+
+Vertexptr CreateVertexes(int Num);//creates Vertex from 1 to Num
+listptr CreatelistVertex(Vertexptr V, Vertexptr VertexNeibour, int weight, listptr Head);//adds elements to the list
+Vertexptr Makelists(Vertexptr V, int Num);//Make adjacency list for each entry
+
 int main(void)
 {
-    struct Vertex V[50];
-    int i,NoOfVertex,NoOfNeibours;
-    printf("Enter the Number Of Vertices:\n");
-    scanf("%d",&NoOfVertex);
-    for(i=0;i<NoOfVertex;i++)
+    int Num,i=0,j=1;
+    Vertexptr V=NULL;
+    printf("\nEnter No of Vertex in the graph\n");
+    scanf("%d",&Num);
+    V=CreateVertexes(Num);
+    if(V!=NULL)
     {
-        printf("Enter the number of Neibours of Node %d for which the neibours bigger than current Vertex\n",i);
-        scanf("%d",&NoOfNeibours);
-        CreateLinkedList(V[i].List,NoOfNeibours);
+        V = Makelists(V,Num);
+    }
+    else
+    {
+        printf("\nmemory not allocated\n");
+        return 1;
     }
     return 0;
 }
-void CreateLinkedList(Vertex V[], int NoOfNeibours, int index)
+//adds elements to the list
+listptr CreatelistVertex(Vertexptr V,Vertexptr VertexNeibour,int weight, listptr Head)
 {
-    int i,weight,neibour;
-    for(i=0;i<NoOfNeibours;i++)
+    listptr New=NULL;
+    New = (listptr)malloc(sizeof (struct list));
+    if (New != NULL)
     {
-        printf("Enter the Adjacent Vertex followed by its weight");
-        scanf("%d %d",&neibour,&weight);
-        if(neibour<=index)
+        if(Head == NULL)
         {
-            printf("Please Enter The Neibouring Vertex having biggeer index than currentVertex\nTRY AGAIN/n");
-            NoOfNeibours--;
+            V->Neigh = New;
+            V->Neigh->Neighbours=VertexNeibour;
+            V->Neigh->Next=NULL;
+            V->Neigh->edgewt=weight;
+            return V->Neigh;
         }
         else
         {
-            AddToList()
+
+            Head->Next=New;
+            New->Neighbours=VertexNeibour;
+            New->Next=NULL;
+            New->edgewt=weight;
+            return New;
+        }
+    }
+    else
+    {
+        printf("\nMemory Allocation failed\n");
+        return NULL;
+    }
+}
+//creates Vertex from 1 to Num
+Vertexptr CreateVertexes(int Num)
+{
+    Vertexptr V=NULL;
+    int j;
+    V = (Vertexptr) malloc(Num * sizeof(struct Vertex));
+    if(V !=NULL)
+    {
+        for(j=0;j<Num;j++)
+        {
+            (V+j)->VertexNumber=j+1;
+            (V+j)->Neigh=NULL;
+        }
+        return V;
+    }
+    else
+    {
+        printf("\nmemory not allocated\n");
+        return V;
+    }
+}
+//Make adjacency list for each entry
+Vertexptr Makelists(Vertexptr V,int Num)
+{
+    int i,j,Neigh,temp,weight;
+    listptr listVertex=NULL;
+    Vertexptr nVertex;
+    for(i=0;i<Num;i++)
+    {
+        printf("Enter Number of Neighbours of Vertex %d which are bigger than current vertex:\n",i+1);
+        scanf("%d",&Neigh);
+        if(Neigh<Num)
+        {
+            if(Neigh!=0)
+                printf("Enter Neighbours of Vertex %d which are bigger than current vertex along with edge weight:\n",i+1);
+            listVertex=NULL;
+            nVertex=V+i;
+            for(j=0;j<Neigh;j++)
+            {
+                scanf("%d",&temp);
+                scanf("%d",&weight);
+                if(temp<=Num && temp!= i+1 && temp > 0 && weight > 0)
+                {
+                    listVertex = CreatelistVertex(nVertex,V+temp-1,listVertex);
+                    listVertex = CreatelistVertex(nVertex,V+temp-1,listVertex);
+                }
+                else
+                {
+                    if(weight==0)
+                        printf("\n Edge Weight cannot be ZERO\n");
+                    if(temp == i+1)
+                        printf("\nVertex cannot be connected to itself.TRY AGAIN\n");
+                    else
+                        printf("\nThe Vertex you entered does not exist\nTry again\n");
+                    j--;
+                }
+            }
+        }
+        else
+        {
+            printf("\nNumber Neighbours exceeds number of Vertex\n");
+            i--;
         }
 
-    }
+
+            //        printf("Enter Number of Neighbours of Vertex %d :\n",i+1);
+//        scanf("%d",&Neigh);
+//        if(Neigh<Num)
+//        {
+//            if(Neigh!=0)
+//                printf("Enter Neighbours of Vertex %d :\n",i+1);
+//            listVertex=NULL;
+//            nVertex = V+i;
+
+
+//
+//    }
+    return V;
 }
