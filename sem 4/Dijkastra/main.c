@@ -3,7 +3,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #define INF INT_MAX
-
+#define MAXHEAPLENGTH 100
 struct Vertex
 {
     int VertexNumber;
@@ -20,13 +20,29 @@ struct list
 
 typedef struct list* listptr;
 
+struct HeapElement
+{
+    struct Vertex* VertexIndex;
+    int dist;
+    struct Vertex* Prev;
+};
+
+struct Heap
+{
+    struct HeapElement Array[MAXHEAPLENGTH];
+    int Heapsize;
+};
+
+typedef struct Heap* HeapPtr;
+
+
 Vertexptr CreateVertexes(int Num);//creates Vertex from 1 to Num
 void CreatelistVertex(Vertexptr V, Vertexptr VertexNeibour, int weight);//adds elements to the list
 Vertexptr Makelists(Vertexptr V, int Num);//Make adjacency list for each entry
-
+void DijkstraAlgorithm(Vertexptr V, int Num, int Source);
 int main(void)
 {
-    int Num,i=0,j=1;
+    int Num,i=0,j=1,source;
     Vertexptr V=NULL;
     printf("\nEnter No of Vertex in the graph\n");
     scanf("%d",&Num);
@@ -34,6 +50,8 @@ int main(void)
     if(V!=NULL)
     {
         V = Makelists(V,Num);
+        printf("Enter the Source Vertex\n");
+        scanf("%d",&source);
 
     }
     else
@@ -128,9 +146,55 @@ Vertexptr Makelists(Vertexptr V,int Num)
         }
         else
         {
-            printf("\nNumber Neighbours exceeds number of Vertex(less than current Vertex)\n");
+            printf("\nNumber Neighbours exceeds number of Vertex (less than current Vertex)\n");
             i--;
         }
     }
     return V;
+}
+
+//Decrease the key of an element having index i
+void DecreaseKey(HeapPtr A,int i,int NewKey)
+{
+    if(A->Array[i-1] < NewKey)
+    {
+        printf("\nERROR:NewKey is Greater than Current key\n");
+    }
+    else {
+        A->Array[i-1] = NewKey;
+        while ( i > 0 && A->Array[Parent(i)-1] > A->Array[i-1]) {
+            Swap(&(A->Array[i-1]),&(A->Array[Parent(i)-1]));
+            i=Parent(i);
+        }
+    }
+
+}
+
+void DijkstraAlgorithm(Vertexptr V,int Num,int Source)
+{
+    HeapPtr H;
+    int i;
+    H = (HeapPtr)malloc(sizeof (struct Heap));
+    if(H == NULL)
+    {
+        printf("\nERROR:Memory Allocation failed\n");
+        return;
+    }
+    else {
+        for(i=0;i<Num;i++)
+        {
+            H->Array[i].VertexIndex = V+i;
+            H->Array[i].dist=INF;
+            H->Array[i].Prev=NULL;
+        }
+        H->Array[Source-1].dist=0;//source
+        Swap(&(H->Array[Source-1]),&(H->Array[0]));
+    }
+}
+void Swap(struct HeapElement *a,struct HeapElement *b)
+{
+    struct HeapElement temp;
+    temp=(*a);
+    (*a)=(*b);
+    (*b)=temp;
 }

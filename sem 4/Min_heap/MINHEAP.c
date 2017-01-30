@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#define NEGINF INT_MAX
+#define INF INT_MAX
 #define MAXHEAPLENGTH 100
 #define FAIL -1000
 
@@ -128,7 +128,7 @@ int extractmin(MinHeappointer A)
 void MinHeapInsert(MinHeappointer A,int key)
 {
     A->Heapsize++;
-    A->Array[A->Heapsize-1]=NEGINF;
+    A->Array[A->Heapsize-1]=INF;
     DecreaseKey(A,A->Heapsize,key);
 }
 //function which calls Buildheap after taking the array
