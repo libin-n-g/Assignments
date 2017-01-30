@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <limits.h>
+#include <stdlib.h>
 #define INF INT_MAX
 
 struct Vertex
@@ -20,7 +21,7 @@ struct list
 typedef struct list* listptr;
 
 Vertexptr CreateVertexes(int Num);//creates Vertex from 1 to Num
-listptr CreatelistVertex(Vertexptr V, Vertexptr VertexNeibour, int weight, listptr Head);//adds elements to the list
+void CreatelistVertex(Vertexptr V, Vertexptr VertexNeibour, int weight);//adds elements to the list
 Vertexptr Makelists(Vertexptr V, int Num);//Make adjacency list for each entry
 
 int main(void)
@@ -33,6 +34,7 @@ int main(void)
     if(V!=NULL)
     {
         V = Makelists(V,Num);
+
     }
     else
     {
@@ -42,34 +44,28 @@ int main(void)
     return 0;
 }
 //adds elements to the list
-listptr CreatelistVertex(Vertexptr V,Vertexptr VertexNeibour,int weight, listptr Head)
+void CreatelistVertex(Vertexptr V,Vertexptr VertexNeibour,int weight)
 {
     listptr New=NULL;
     New = (listptr)malloc(sizeof (struct list));
     if (New != NULL)
     {
-        if(Head == NULL)
+        if(V->Neigh==NULL)
         {
-            V->Neigh = New;
-            V->Neigh->Neighbours=VertexNeibour;
-            V->Neigh->Next=NULL;
-            V->Neigh->edgewt=weight;
-            return V->Neigh;
+            New->Next=NULL;
         }
         else
         {
-
-            Head->Next=New;
-            New->Neighbours=VertexNeibour;
-            New->Next=NULL;
-            New->edgewt=weight;
-            return New;
+            New->Next=V->Neigh;
         }
+        V->Neigh=New;
+        New->Neighbours=VertexNeibour;
+        New->edgewt=weight;
     }
     else
     {
         printf("\nMemory Allocation failed\n");
-        return NULL;
+        exit(1);
     }
 }
 //creates Vertex from 1 to Num
@@ -103,7 +99,7 @@ Vertexptr Makelists(Vertexptr V,int Num)
     {
         printf("Enter Number of Neighbours of Vertex %d which are bigger than current vertex:\n",i+1);
         scanf("%d",&Neigh);
-        if(Neigh<Num)
+        if(Neigh<(Num-i))
         {
             if(Neigh!=0)
                 printf("Enter Neighbours of Vertex %d which are bigger than current vertex along with edge weight:\n",i+1);
@@ -115,8 +111,8 @@ Vertexptr Makelists(Vertexptr V,int Num)
                 scanf("%d",&weight);
                 if(temp<=Num && temp!= i+1 && temp > 0 && weight > 0)
                 {
-                    listVertex = CreatelistVertex(nVertex,V+temp-1,listVertex);
-                    listVertex = CreatelistVertex(nVertex,V+temp-1,listVertex);
+                    CreatelistVertex(nVertex,V+temp-1,weight);
+                    CreatelistVertex(V+temp-1,nVertex,weight);
                 }
                 else
                 {
@@ -132,22 +128,9 @@ Vertexptr Makelists(Vertexptr V,int Num)
         }
         else
         {
-            printf("\nNumber Neighbours exceeds number of Vertex\n");
+            printf("\nNumber Neighbours exceeds number of Vertex(less than current Vertex)\n");
             i--;
         }
-
-
-            //        printf("Enter Number of Neighbours of Vertex %d :\n",i+1);
-//        scanf("%d",&Neigh);
-//        if(Neigh<Num)
-//        {
-//            if(Neigh!=0)
-//                printf("Enter Neighbours of Vertex %d :\n",i+1);
-//            listVertex=NULL;
-//            nVertex = V+i;
-
-
-//
-//    }
+    }
     return V;
 }
