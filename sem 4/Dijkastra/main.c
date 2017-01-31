@@ -1,10 +1,15 @@
-
+/* AUTHOR : LIBIN N GEORGE
+ * LAST CHANGED:31-1-2017
+ * Program which Implement Dijkstra's Algorithm for computing single source shortest path. Uses heaps for implementation.
+ * Output format:Print the shortest path distances to each vertex from the source vertex and
+ * the predecessor of every vertex on the shortest path to the source vertex.
+ * Also detects If there is no path from source vertex to a certain vertex.
+ */
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
 #define INF INT_MAX
 #define MAXHEAPLENGTH 100
-#define FAIL -1
 
 struct Vertex
 {
@@ -43,7 +48,7 @@ Vertexptr CreateVertexes(int Num);//creates Vertex from 1 to Num
 void CreatelistVertex(Vertexptr V, Vertexptr VertexNeibour, int weight);//adds elements to the list
 Vertexptr Makelists(Vertexptr V, int Num);//Make adjacency list for each entry
 HeapPtr DijkstraAlgorithm(Vertexptr V, int Num, int Source);
-void Print
+void PrintResult(HeapPtr A,int Num);//Display Results
 
 void DecreaseKey(HeapPtr A,int i,int NewKey);
 struct HeapElement extractmin(HeapPtr A);
@@ -57,24 +62,31 @@ int Parent(int i);
 
 int main(void)
 {
-    int Num,i=0,j=1,source;
+    int Num,source;
     Vertexptr V=NULL;
     HeapPtr H=NULL;
     printf("\nEnter No of Vertex in the graph\n");
     scanf("%d",&Num);
-    V=CreateVertexes(Num);
-    if(V!=NULL)
+    if(Num > 0)
     {
-        V = Makelists(V,Num);
-        printf("Enter the Source Vertex\n");
-        scanf("%d",&source);
-        H=DijkstraAlgorithm(V,Num,source);
-
+        V=CreateVertexes(Num);
+        if(V!=NULL)
+        {
+            V = Makelists(V,Num);
+            printf("Enter the Source Vertex\n");
+            scanf("%d",&source);
+            H=DijkstraAlgorithm(V,Num,source);
+            PrintResult(H,Num);
+        }
+        else
+        {
+            printf("\nmemory not allocated\n");
+            return 1;
+        }
     }
     else
     {
-        printf("\nmemory not allocated\n");
-        return 1;
+        printf("\nNUMBER OF VERTEX IS LESS THAN ZERO\n");
     }
     return 0;
 }
@@ -219,6 +231,10 @@ HeapPtr DijkstraAlgorithm(Vertexptr V,int Num,int Source)
 
             while ( adjlist!= NULL) {
                 v=&(H->Array[adjlist->Neighbours->HeapPosition]);
+                if(u.dist==INF)
+                {
+                    break;
+                }
                 alt = u.dist + adjlist->edgewt;
                 if(alt < v->dist)
                 {
@@ -230,6 +246,24 @@ HeapPtr DijkstraAlgorithm(Vertexptr V,int Num,int Source)
         }
     }
     return H;
+}
+//prints output
+void PrintResult(HeapPtr A,int Num)
+{
+    int i;
+    printf("\n-----------------------------------------------------------------------\n");
+    printf("\tDestination\tPredecessor Vertex\tShortestDistance\n");
+    for(i=0;i<Num;i++)
+    {
+        if(A->Array[i].dist < INF)
+        {
+            printf("\t\t%d\t\t%d\t\t%d\n",A->Array[i].VertexIndex->VertexNumber,A->Array[i].Prev->VertexNumber,A->Array[i].dist);
+        }
+        else
+        {
+            printf("NO PATH FOUND FROM SOURCE TO VERTEX %d\n",A->Array[i].VertexIndex->VertexNumber);
+        }
+    }
 }
 
 //find and delete the min Element
