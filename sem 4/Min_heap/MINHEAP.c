@@ -119,7 +119,7 @@ int extractmin(MinHeappointer A)
     minimum = FindMin(A);
     if(minimum!=FAIL)
     {
-        DeleteMin(A);\
+        DeleteMin(A);
         return minimum;
     }
     return FAIL;
