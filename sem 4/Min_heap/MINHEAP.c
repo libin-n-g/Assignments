@@ -1,5 +1,5 @@
 /* AUTHOR : LIBIN N GEORGE
- * LAST CHANGED:30-1-2017
+ * LAST CHANGED:1-2-2017
  * Program which Implement a min-heap with standard operations
  * (buildHeap, findMin, extractMin, decreaseKey, insert).
  * and heapsort.
@@ -11,6 +11,9 @@
 #define INF INT_MAX
 #define MAXHEAPLENGTH 100
 #define FAIL -1000
+#define Parent(X) (X/2)
+#define LeftChild(X) (2*X)
+#define RightChild(X) (2*X+1)
 
 struct Heap
 {
@@ -20,9 +23,6 @@ struct Heap
 typedef struct Heap* MinHeappointer;
 
 void Swap(int *a,int* b);
-int LeftChild(int i);
-int RightChild(int i);
-int Parent(int i);
 
 void MinHeapify(MinHeappointer A,int index);
 void BuildHeap(MinHeappointer A);
@@ -30,10 +30,10 @@ int FindMin(MinHeappointer A);
 void DecreaseKey(MinHeappointer A, int i, int NewKey);
 void DisplayHeap(MinHeappointer A);
 int extractmin(MinHeappointer A);
-void DeleteMin(MinHeappointer A);
 void MinHeapInsert(MinHeappointer A,int key);
 
 int HeapSort(MinHeappointer A,int sorted[MAXHEAPLENGTH]);
+
 void Build(MinHeappointer A);//function which calls Buildheap after taking the array
 void DecreaseKeyOfHeap(MinHeappointer A);//function which calls Decreasekey after taking inputs
 int main(void)
@@ -96,22 +96,7 @@ int main(void)
     }while(Input != 7);
     return 0;
 }
-//Delete the min element
-void DeleteMin(MinHeappointer A)
-{
-    if(A->Heapsize<1)
-    {
-        printf("\nERROR:Heap Underflow\n");
-        return;
-    }
-    else
-    {
-        Swap(&(A->Array[0]),&(A->Array[A->Heapsize-1]));
-        (A->Array[A->Heapsize-1])=0;
-        A->Heapsize--;
-        MinHeapify(A,1);
-    }
-}
+
 //find and delete the min Element
 int extractmin(MinHeappointer A)
 {
@@ -119,7 +104,18 @@ int extractmin(MinHeappointer A)
     minimum = FindMin(A);
     if(minimum!=FAIL)
     {
-        DeleteMin(A);
+        if(A->Heapsize<1)
+        {
+            printf("\nERROR:Heap Underflow\n");
+            return;
+        }
+        else
+        {
+            Swap(&(A->Array[0]),&(A->Array[A->Heapsize-1]));
+            (A->Array[A->Heapsize-1])=0;
+            A->Heapsize--;
+            MinHeapify(A,1);
+        }
         return minimum;
     }
     return FAIL;
@@ -244,7 +240,7 @@ void DecreaseKey(MinHeappointer A,int i,int NewKey)
     }
     else {
         A->Array[i-1] = NewKey;
-        while ( i > 0 && A->Array[Parent(i)-1] > A->Array[i-1]) {
+        while ( i > 1 && A->Array[Parent(i)-1] > A->Array[i-1]) {
             Swap(&(A->Array[i-1]),&(A->Array[Parent(i)-1]));
             i=Parent(i);
         }
@@ -276,21 +272,6 @@ int HeapSort(MinHeappointer A,int sorted[MAXHEAPLENGTH])
         i++;
     }
     return i;
-}
-
-int LeftChild(int i)
-{
-    return 2*i;
-}
-
-int RightChild(int i)
-{
-    return 2*i+1;
-}
-
-int Parent(int i)
-{
-    return i/2;
 }
 
 void Swap(int *a, int *b)
