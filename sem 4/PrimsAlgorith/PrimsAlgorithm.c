@@ -1,9 +1,14 @@
 /* AUTHOR : LIBIN N GEORGE
- * LAST CHANGED:1-2-2017
- * Program which Implement Dijkstra's Algorithm for computing single source shortest path. Uses heaps for implementation.
- * Output format:Print the shortest path distances to each vertex from the source vertex and
- * the predecessor of every vertex on the shortest path to the source vertex.
- * Also detects If there is no path from source vertex to a certain vertex.
+ * LAST CHANGED:3-2-2017
+ * Program Implementing Prim's Algorithm for computing Minimum Spanning Tree of the input graph using minheaps.
+ * Input format:
+ * First line : n (number of vertices of the graph)
+ * Second line : d1 (Number of neighbours of v1 whose vertex numbers are bigger than v1).
+ * Next d1 lines : vertex number of a higher numbered neighbour of v1 and the edge-weight of the corresponding edge
+ * (separated by a space). Assume the neighbors are given increasing order of vertex numbers.
+ * and so on..
+ * Output format:
+ * Print the edges of an MST along with the edge weights. If the graph is not connected, print a message indicating that.
  */
 #include <stdio.h>
 #include <limits.h>
@@ -33,21 +38,17 @@ struct list
 
 typedef struct list* listptr;
 
-struct HeapElement
-{
-    struct Vertex* VertexIndex;
-};
 
 struct Heap
 {
-    struct HeapElement Array[MAXHEAPLENGTH];
+    struct Vertex* HeapArray[MAXHEAPLENGTH];
     int Heapsize;
 };
 
 typedef struct Heap* HeapPtr;
 
 
-void DijkstraAlgorithm(Vertexptr V, int Num, int Source);
+int PrimsAlgorithem(Vertexptr V, int Num);
 void PrintResult(Vertexptr A,int Num);//Display Results
 
 //functions for creating Graph
@@ -57,15 +58,15 @@ Vertexptr Makelists(Vertexptr V, int Num);//Make adjacency list for each vertex
 
 // Functions for heap operations
 void DecreaseKey(HeapPtr A,int i,int NewKey);//decrease key of HeapArray at index i
-struct HeapElement extractmin(HeapPtr A);//find and delete min
-struct HeapElement FindMin(HeapPtr A);//finds min
+struct Vertex* extractmin(HeapPtr A);//find and delete min
+struct Vertex* FindMin(HeapPtr A);//finds min
 void MinHeapify(HeapPtr A, int index);
 
-void Swap(struct HeapElement *a,struct HeapElement *b);
+void Swap(struct Vertex* *a,struct Vertex* *b);
 
 int main(void)
 {
-    int Num,source;
+    int Num,flag;
     Vertexptr V=NULL;
     printf("\nEnter No of Vertex in the graph\n");
     scanf("%d",&Num);
@@ -75,16 +76,11 @@ int main(void)
         if(V!=NULL)
         {
             V = Makelists(V,Num);
-            printf("Enter the Source Vertex\n");
-            scanf("%d",&source);
-            if(source>0)
-            {
-            DijkstraAlgorithm(V,Num,source);
-            PrintResult(V,Num);
-            }
-            else {
-                printf("\nSOURCE DOES NOT EXIST\n");
-            }
+            flag=PrimsAlgorithem(V,Num);
+            if(flag == 0)
+                PrintResult(V,Num);
+            else
+                printf("\nThe Given Graph is Disconneted\n");
         }
         else
         {
@@ -166,7 +162,7 @@ Vertexptr Makelists(Vertexptr V,int Num)
                 scanf("%d",&weight);
                 if(temp<=Num && temp!= i+1 && temp > 0 && weight > 0)
                 {
-                    CreatelistVertex(nVertex,V+temp-1,weight);
+                    CreatelistVertex(nVertex,V+temp-1,weight);//creating edge b/w nvertex and V+temp-1 inlist of nVertex
                     CreatelistVertex(V+temp-1,nVertex,weight);
                 }
                 else
@@ -193,95 +189,89 @@ Vertexptr Makelists(Vertexptr V,int Num)
 //Decrease the key of an element having index i
 void DecreaseKey(HeapPtr A,int i,int NewKey)
 {
-    if(A->Array[i-1].VertexIndex->dist < NewKey)
+    if(A->HeapArray[i-1]->dist < NewKey)
     {
         printf("\nERROR:NewKey is Greater than Current key\n");
     }
     else {
-        A->Array[i-1].VertexIndex->dist = NewKey;
-        while ( i > 1 && A->Array[Parent(i)-1].VertexIndex->dist > A->Array[i-1].VertexIndex->dist)//condition for swaping and index checking
+        A->HeapArray[i-1]->dist = NewKey;
+        while ( i > 1 && A->HeapArray[Parent(i)-1]->dist > A->HeapArray[i-1]->dist)//condition for swaping and index checking
         {
-            Swap(&(A->Array[i-1]),&(A->Array[Parent(i)-1]));
+            Swap(&(A->HeapArray[i-1]),&(A->HeapArray[Parent(i)-1]));
             i=Parent(i);
         }
     }
 
 }
 
-void DijkstraAlgorithm(Vertexptr V,int Num,int Source)
+int PrimsAlgorithem(Vertexptr V,int Num)
 {
     HeapPtr H;
-    int i,alt;
     struct list* adjlist;
-    struct HeapElement u;
-    struct HeapElement *v;
+    struct Vertex* u;
+    struct Vertex* *v;
+    int flag=1;
     H = (HeapPtr)malloc(sizeof (struct Heap));
     if(H == NULL)
     {
         printf("\nERROR:Memory Allocation failed\n");
-        return;
+        return 1;
     }
     else {
-        H->Heapsize=0;
-        for(i=0;i<Num;i++)//Making the Heap
+        for(H->Heapsize=0;H->Heapsize<Num;H->Heapsize++)//Making the Heap
         {
-            H->Array[i].VertexIndex = V+i;
-            (V+i)->HeapPosition=i;
-            H->Array[i].VertexIndex->dist=INF;
-            H->Array[i].VertexIndex->Prev=NULL;
-            H->Heapsize++;
+            H->HeapArray[H->Heapsize] = V+H->Heapsize;
+            (V+H->Heapsize)->HeapPosition=H->Heapsize;
+            H->HeapArray[H->Heapsize]->dist=INF;
+            H->HeapArray[H->Heapsize]->Prev=NULL;
         }
-        H->Array[Source-1].VertexIndex->dist=0;
-        Swap(&(H->Array[Source-1]),&(H->Array[0]));//source as root
+        H->HeapArray[0]->dist=0;
 
         while (H->Heapsize > 0) {
             u = extractmin(H);
-            adjlist = u.VertexIndex->Neigh;
+            adjlist = u->Neigh;
 
             while ( adjlist!= NULL) {
-                v=&(H->Array[adjlist->Neighbours->HeapPosition]);
-                if(u.VertexIndex->dist==INF)
+                v=&(H->HeapArray[adjlist->Neighbours->HeapPosition]);
+                flag=0;
+                if(u->dist==INF)
                 {
-                    break;//Disconneted Graph
+                    flag = 1;
+                    return flag;             //Disconneted Graph No MST can be formed
                 }
-                alt = u.VertexIndex->dist + adjlist->edgewt;
-                if(alt < v->VertexIndex->dist)
+                if(adjlist->Neighbours->HeapPosition < H->Heapsize && adjlist->edgewt < (*v)->dist)
                 {
-                    v->VertexIndex->Prev=u.VertexIndex;
-                    DecreaseKey(H,v->VertexIndex->HeapPosition+1,alt);
+                    (*v)->Prev=u;
+                    DecreaseKey(H,(*v)->HeapPosition+1,adjlist->edgewt);
                 }
                 adjlist = adjlist->Next;
             }
         }
     }
+    free(H);
+    return flag;
 }
 //prints output
 void PrintResult(Vertexptr A, int Num)
 {
     int i;
     printf("\n-----------------------------------------------------------------------\n");
-    printf("\tDestination\tPredecessor Vertex\tShortestDistance\n");
+    printf("\t\t Edges\tEdgeWeight\n");
     for(i=0;i<Num;i++)
     {
-        if((A+i)->dist < INF)
-        {
-            if((A+i)->Prev != NULL)
-                printf("\t\t%d\t\t%d\t\t%d\n",(A+i)->VertexNumber,(A+i)->Prev->VertexNumber,(A+i)->dist);
-            else {
-                printf("\t\t%d\t\tN.A\t\t%d\n",(A+i)->VertexNumber,(A+i)->dist);
-            }
-        }
-        else
-        {
-            printf("\tNO PATH FOUND FROM SOURCE TO VERTEX %d\n",(A+i)->VertexNumber);
-        }
+
+        if((A+i)->Prev != NULL)
+            printf("\t\t(%d, %d)\t\t%d\n",(A+i)->VertexNumber,(A+i)->Prev->VertexNumber,(A+i)->dist);
+
+
     }
+    printf("\n-----------------------------------------------------------------------\n");
 }
 
 //find and delete the min Element
-struct HeapElement extractmin(HeapPtr A)
+struct Vertex* extractmin(HeapPtr A)
 {
-    struct HeapElement minimum;
+    struct Vertex* minimum;
     minimum = FindMin(A);
     if(A->Heapsize<1)
     {
@@ -290,14 +280,14 @@ struct HeapElement extractmin(HeapPtr A)
     }
     else
     {
-        Swap(&(A->Array[0]),&(A->Array[A->Heapsize-1]));
+        Swap(&(A->HeapArray[0]),&(A->HeapArray[A->Heapsize-1]));
         A->Heapsize--;
         MinHeapify(A,1);
     }
     return minimum;
 }
 //finds element having maximum priority(min Key)
-struct HeapElement FindMin(HeapPtr A)
+struct Vertex* FindMin(HeapPtr A)
 {
     if(A->Heapsize<1)
     {
@@ -306,7 +296,7 @@ struct HeapElement FindMin(HeapPtr A)
     }
     else
     {
-        return (A->Array[0]);
+        return (A->HeapArray[0]);
     }
 }
 // make Min Heap from two Heaps (as child)
@@ -321,7 +311,7 @@ void MinHeapify(HeapPtr A, int index)
     }
     else
     {
-        if(r <= A->Heapsize && A->Array[r-1].VertexIndex->dist < A->Array[l-1].VertexIndex->dist)
+        if(r <= A->Heapsize && A->HeapArray[r-1]->dist < A->HeapArray[l-1]->dist)
         {
             s=r;
         }
@@ -329,22 +319,22 @@ void MinHeapify(HeapPtr A, int index)
         {
             s=l;
         }
-        if(A->Array[index-1].VertexIndex->dist>A->Array[s-1].VertexIndex->dist)
+        if(A->HeapArray[index-1]->dist > A->HeapArray[s-1]->dist)
         {
-            Swap(&A->Array[index-1],&A->Array[s-1]);
+            Swap(&A->HeapArray[index-1],&A->HeapArray[s-1]);
             MinHeapify(A,s);
         }
     }
 }
 
-void Swap(struct HeapElement *a,struct HeapElement *b)
+void Swap(struct Vertex* *a,struct Vertex* *b)
 {
-    struct HeapElement temp;
+    struct Vertex* temp;
     int postemp;
-    postemp=(*a).VertexIndex->HeapPosition;
-    (*a).VertexIndex->HeapPosition=(*b).VertexIndex->HeapPosition;
-    (*b).VertexIndex->HeapPosition=postemp;
+    postemp=(*a)->HeapPosition;
+    (*a)->HeapPosition=(*b)->HeapPosition;
+    (*b)->HeapPosition=postemp;
     temp=(*a);
     (*a)=(*b);
-    (*b)=temp;    
+    (*b)=temp;
 }

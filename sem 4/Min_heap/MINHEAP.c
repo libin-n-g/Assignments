@@ -107,7 +107,7 @@ int extractmin(MinHeappointer A)
         if(A->Heapsize<1)
         {
             printf("\nERROR:Heap Underflow\n");
-            return;
+            return 0;
         }
         else
         {
@@ -201,7 +201,7 @@ void MinHeapify(MinHeappointer A, int index)
     int l,r,s;
     l=LeftChild(index);
     r=RightChild(index);
-    if(index >= (A->Heapsize+1)/2)
+    if(index > (A->Heapsize)/2)
     {
         return;
     }

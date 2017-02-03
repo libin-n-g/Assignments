@@ -17,7 +17,7 @@ struct LCR
 };
 
 int ithSmallest(int* Array, int Lower, int Upper, int i);
-int ithAfterSort(int* Array, int lower, int Upper, int index);
+int ithInGroupof5(int* Array, int lower, int Upper, int index);
 struct LCR Partition(int* Array,int lower,int Upper,int pivot);
 void swap(int* a,int* b);
 int Min(int a,int b);
@@ -51,7 +51,7 @@ int ithSmallest(int* Array,int Lower,int Upper,int i)
     struct LCR Index;
     if((Upper-Lower)<=5)
     {
-        return ithAfterSort(Array,Lower,Upper,i);
+        return ithInGroupof5(Array,Lower,Upper,i);
     }
     Medians = (int*)malloc((((Upper-Lower)/5)+1)*(sizeof(int)));//for storing medians
     if(Medians==NULL)
@@ -62,7 +62,7 @@ int ithSmallest(int* Array,int Lower,int Upper,int i)
     for(j=Lower;j<Upper;j=j+5)
     {
         center=(Upper-j)/2;
-        (*(Medians+k)) = ithAfterSort(Array,j,Min(j+5,Upper),center);
+        (*(Medians+k)) = ithInGroupof5(Array,j,Min(j+5,Upper),center);
         k++;
     }
     MedianOfMedian = ithSmallest(Medians,0,k,k/2);
@@ -81,7 +81,7 @@ int ithSmallest(int* Array,int Lower,int Upper,int i)
     }
 }
 //function for finding ith element after sorting 5 elements
-int ithAfterSort(int* Array,int lower,int Upper,int index)
+int ithInGroupof5(int* Array,int lower,int Upper,int index)
 {
     int i,j;
 
