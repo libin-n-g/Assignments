@@ -15,9 +15,9 @@
 #include <stdlib.h>
 #define INF INT_MAX
 #define MAXHEAPLENGTH 100
-#define Parent(X) (X/2)
-#define LeftChild(X) (2*X)
-#define RightChild(X) (2*X+1)
+#define Parent(X) ((X)/2)
+#define LeftChild(X) (2*(X))
+#define RightChild(X) (2*(X)+1)
 
 struct Vertex
 {
@@ -160,15 +160,13 @@ Vertexptr Makelists(Vertexptr V,int Num)
             {
                 scanf("%d",&temp);
                 scanf("%d",&weight);
-                if(temp<=Num && temp!= i+1 && temp > 0 && weight > 0)
+                if(temp<=Num && temp!= i+1 && temp > 0)
                 {
                     CreatelistVertex(nVertex,V+temp-1,weight);//creating edge b/w nvertex and V+temp-1 inlist of nVertex
                     CreatelistVertex(V+temp-1,nVertex,weight);
                 }
                 else
                 {
-                    if(weight==0)
-                        printf("\n Edge Weight cannot be ZERO\n");
                     if(temp == i+1)
                         printf("\nVertex cannot be connected to itself.TRY AGAIN\n");
                     else
