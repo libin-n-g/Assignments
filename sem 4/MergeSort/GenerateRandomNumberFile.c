@@ -16,7 +16,7 @@ FILE* GenerateRandomNumberFile(FILE *fp1)
 {
     srand(time(NULL));
     int r;
-    long int i=10000000;
+    long int i=1000;
     while(i)
     {
         r = rand();

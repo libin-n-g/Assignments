@@ -5,10 +5,11 @@
 */
 #include<stdio.h>
 #include<stdlib.h>
+#define min(A,B) (A)<(B)?(A):(B)
 
 void BottomUpMergeSort(char inputfile[], char outputfile[]);
 void BottomUpMerge(FILE* fp1, FILE* fp2, FILE *fp3, int n);
-int min(int a,int b);
+
 FILE* OpenFile(char file[], char mode[]);//opens file and return pointer
 int main()
 {
@@ -107,11 +108,6 @@ void BottomUpMerge(FILE* fp1,FILE* fp2,FILE* fp3,int n)
             fread(&temp2,sizeof(int),1,fp2);
         }
     }
-}
-
-int min(int a,int b)
-{
-    return a < b ? a : b ;
 }
 FILE* OpenFile(char file[],char mode[] )
 {
