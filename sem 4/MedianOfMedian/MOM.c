@@ -39,7 +39,11 @@ int main(void)
         {
             scanf("%d",Numbers+i);
         }
-        printf("\nMedian is %d \n",ithSmallest(Numbers,0,n,n/2));
+        for(i=0;i<n;i++)
+        {
+            printf("\nMedian is %d \n",ithSmallest(Numbers,0,n,i));
+        }
+
     }
     return 0;
 }

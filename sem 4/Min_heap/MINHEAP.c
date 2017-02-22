@@ -11,9 +11,9 @@
 #define INF INT_MAX
 #define MAXHEAPLENGTH 100
 #define FAIL -1000
-#define Parent(X) (X/2)
-#define LeftChild(X) (2*X)
-#define RightChild(X) (2*X+1)
+#define Parent(X) ((X)/2)
+#define LeftChild(X) (2*(X))
+#define RightChild(X) (2*(X)+1)
 
 struct Heap
 {

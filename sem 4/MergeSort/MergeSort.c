@@ -119,5 +119,4 @@ FILE* OpenFile(char file[],char mode[] )
         return NULL;
     }
     return fp;
-
 }
