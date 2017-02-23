@@ -226,7 +226,7 @@ void MinHeapify(MinHeappointer A, int index)
 void BuildHeap(MinHeappointer A)
 {
     int i;
-    for(i=(A->Heapsize/2);i>=0;i--)
+    for(i=(A->Heapsize/2);i>0;i--)
     {
         MinHeapify(A,i);
     }

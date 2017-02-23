@@ -271,7 +271,7 @@ struct Vertex* extractmin(HeapPtr A)
 {
     struct Vertex* minimum;
     minimum = FindMin(A);
-    if(A->Heapsize<1)
+    if(A->Heapsize < 1)
     {
         printf("\nERROR:Heap Underflow\n");
         exit(1);
