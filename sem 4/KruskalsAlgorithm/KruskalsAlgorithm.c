@@ -54,6 +54,10 @@ typedef struct Heap* MinHeapptr;
 int KruskalsAlgorithm(Graphptr G);//returns 1 if graph is conneted;returns 0 when Graph is not connected
 void PrintResult(struct Graph G);
 
+///FUNCTIONS FOR CREATING GRAPH G(V,E)
+void InitaliseVertices(Graphptr G);
+void InitaliseEdges(Graphptr G);
+
 ///FUNCTIONS USED IN HEAPSORT
 void SortEdges(MinHeapptr H,Graphptr G);//function which uses heapsort to make Edgeset in incresing order of weight
 void BuildHeap(MinHeapptr A);
@@ -67,9 +71,7 @@ void MakeSet(Vertexptr G);
 void Union(Vertexptr U,Vertexptr V);
 Vertexptr FindRep(Vertexptr U);
 
-///FUNCTIONS FOR CREATING GRAPH G(V,E)
-void InitaliseVertices(Graphptr G);
-void InitaliseEdges(Graphptr G);
+
 
 int main(void)
 {
@@ -102,14 +104,12 @@ int KruskalsAlgorithm(Graphptr G)
     }
     for(i=0;i<(G->nNumOfEdge);i++)
     {
-        if((FindRep(G->E[i].VertexU)) != FindRep(G->E[i].VertexV))
+        if((FindRep(G->E[i].VertexU)) != FindRep(G->E[i].VertexV))                  //edges sorted in increasing order
         {
             nEdgesinMST++;
             G->E[i].PresentinMST = 1;
             Union(G->E[i].VertexU,G->E[i].VertexV);
         }
-        if(nEdgesinMST >= (G->nNumOfVertex-1))
-            break;
     }
     if(nEdgesinMST == (G->nNumOfVertex-1))
         return 1;
@@ -183,11 +183,13 @@ void InitaliseEdges(Graphptr G)
                 i--;
             }
         }
-        SortEdges(H,G);
+        SortEdges(H,G);//Sorting edges in the increasing order of weights
+        free(H);
     }
     else
     {
         printf("\nERROR: Memory allocation Falied\n");
+        exit(1);
     }
 }
 void SortEdges(MinHeapptr H,Graphptr G)
