@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
-#define INF (INT_MAX/3)
+#define INF (INT_MAX/3)		
 #define MAX 50
 #define NIL -1
 
@@ -49,6 +49,7 @@ int main(void)
     }
     return 0;
 }
+//Initalise Matrix elements into INF
 void InitaliseEdgeWeightMatrix(Graphptr G)
 {
     int v_i,v_j;
@@ -60,6 +61,7 @@ void InitaliseEdgeWeightMatrix(Graphptr G)
         }
     }
 }
+//Initalise Matrix elements into NIL
 void InitalisePredecessor(Graphptr G)
 {
     int v_i,v_j;
@@ -132,6 +134,7 @@ void FloydWarshall(Graphptr G)
         }
     }
 }
+//coping the Matrix From Source to Destination
 void CopyMatrix(int Source[MAX][MAX],int Destination[MAX][MAX],int Upperlimit)
 {
     int i,j;
