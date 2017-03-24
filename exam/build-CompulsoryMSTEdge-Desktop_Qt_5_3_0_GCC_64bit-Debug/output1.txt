@@ -1,0 +1,14 @@
+
+Enter No of Vertex in the graph
+Enter Number of Neighbours of Vertex 1 which are bigger than current vertex:
+Enter Neighbours of Vertex 1 which are bigger than current vertex along with edge weight:
+Enter Number of Neighbours of Vertex 2 which are bigger than current vertex:
+Enter Neighbours of Vertex 2 which are bigger than current vertex along with edge weight:
+Enter Number of Neighbours of Vertex 3 which are bigger than current vertex:
+Enter Neighbours of Vertex 3 which are bigger than current vertex along with edge weight:
+Enter Number of Neighbours of Vertex 4 which are bigger than current vertex:
+Enter Neighbours of Vertex 4 which are bigger than current vertex along with edge weight:
+Enter Number of Neighbours of Vertex 5 which are bigger than current vertex:
+Enter the vertex numbers u and v (separated by a space) of the endpoints of the edge (u,v) whose membership in all MSTs is to be checked
+
+Yes

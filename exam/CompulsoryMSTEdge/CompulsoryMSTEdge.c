@@ -272,7 +272,7 @@ int PrimsAlgorithem(Vertexptr V,int Num)
         while (H->Heapsize > 0) {
             u = extractmin(H);
             adjlist = u->Neigh;
-
+            WeightOfGraph = WeightOfGraph + u->dist;
             while ( adjlist!= NULL) {
                 v=&(H->HeapArray[adjlist->Neighbours->HeapPosition]);
 
@@ -282,7 +282,6 @@ int PrimsAlgorithem(Vertexptr V,int Num)
                 }
                 if(adjlist->Neighbours->HeapPosition < H->Heapsize && adjlist->edgewt < (*v)->dist)
                 {
-                    WeightOfGraph=WeightOfGraph + adjlist->edgewt;
                     (*v)->Prev=u;
                     DecreaseKey(H,(*v)->HeapPosition+1,adjlist->edgewt);
                 }
