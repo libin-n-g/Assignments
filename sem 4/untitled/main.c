@@ -184,7 +184,7 @@ void DeleteKey(Nodeptr x,int k)
             }
             /// case 2c
             else
-            {
+            {/////////////////////Merging
                 PrevChildToKeyK->Keys[PrevChildToKeyK->NumOfKeys] = k;
                 PrevChildToKeyK->chlidren[PrevChildToKeyK->NumOfKeys + 1] = NextChildToKeyK->chlidren[0];
                 PrevChildToKeyK->NumOfKeys++;
@@ -194,7 +194,7 @@ void DeleteKey(Nodeptr x,int k)
                     PrevChildToKeyK->chlidren[j + PrevChildToKeyK->NumOfKeys + 1] = NextChildToKeyK->chlidren[j+1];
                 }
                 PrevChildToKeyK->NumOfKeys = PrevChildToKeyK->NumOfKeys + NextChildToKeyK->NumOfKeys;
-                //deleting node x and child after x
+                //deleting key k from node x and child after key k
                 free(x->chlidren[i]);///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 for(j = i;j < x->NumOfKeys;j++)
                 {
@@ -220,7 +220,82 @@ void DeleteKey(Nodeptr x,int k)
         }
         else
         {
+            Nodeptr RightSibling,LeftSibling,Expectedsubtree;
+            Expectedsubtree = x->chlidren[i-1];
+            if(i >= 2)
+            {
+                LeftSibling = x->chlidren[i-2];
+                if(i <= x->NumOfKeys)
+                {
+                    RightSibling = x->chlidren[i];
+                    ///case 3a
+                    if(RightSibling->NumOfKeys > (MinDegree-1))
+                    {
+                        Expectedsubtree->Keys[Expectedsubtree->NumOfKeys] = x->Keys[i-1];
+                        Expectedsubtree->NumOfKeys++;
+                        Expectedsubtree->chlidren[Expectedsubtree->NumOfKeys] = RightSibling->chlidren[0];
+                        x->Keys[i-1] = RightSibling->Keys[0];
+                        for(j=0;j < RightSibling->NumOfKeys;j++)
+                        {
+                            RightSibling->Keys[j] = RightSibling->Keys[j+1];
+                            RightSibling->Keys[j+1] = 0;
+                            RightSibling->chlidren[j] = RightSibling->chlidren[j+1];
+                        }
+                        RightSibling->NumOfKeys--;
 
+                    }
+                    else if(LeftSibling->NumOfKeys > (MinDegree-1))
+                    {
+                        //////////
+                        for(j = Expectedsubtree->NumOfKeys;j > 0;j--)
+                        {
+                            Expectedsubtree->Keys[j] = Expectedsubtree->Keys[j-1];
+                            Expectedsubtree->chlidren[j+1] = Expectedsubtree->chlidren[j];
+                        }
+                        Expectedsubtree->chlidren[1] = Expectedsubtree->chlidren[0];
+                        ///////////////////
+                        Expectedsubtree->Keys[0] = x->Keys[i-2];
+                        Expectedsubtree->NumOfKeys++;
+                        Expectedsubtree->chlidren[0] = LeftSibling->chlidren[LeftSibling->NumOfKeys];
+                        x->Keys[i-2] = LeftSibling->Keys[LeftSibling->NumOfKeys-1];
+                        LeftSibling->Keys[LeftSibling->NumOfKeys-1] = 0;
+                        LeftSibling->NumOfKeys--;
+                    }
+                    ///case 3b
+                    else
+                    {
+                            ///////////////Merging
+                            ///
+                    }
+                }
+                else
+                {
+                    if(LeftSibling->NumOfKeys > (MinDegree-1))
+                    {
+
+                    }
+                    ///case 3b
+                    else
+                    {
+
+                    }
+                }
+            }
+            else if(i <= x->NumOfKeys)
+            {
+
+                RightSibling = x->chlidren[i];
+                ///case 3a
+                if(RightSibling->NumOfKeys > (MinDegree-1))
+                {
+
+                }
+                ///case 3b
+                else
+                {
+
+                }
+            }
         }
     }
 }
