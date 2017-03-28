@@ -30,13 +30,14 @@ void Search(Nodeptr x,int k);
 
 ///FUNCTIONS FOR DELETE
 Nodeptr DeleteKey(Nodeptr x,int k);
-int FindPredecessorAndDelete(Nodeptr x);
-int FindSuccessorAndDelete(Nodeptr x);
-void Mergewithkeyk(Nodeptr y,int k, Nodeptr z,Nodeptr Root,int iKey);
-void RestructuringwithRightSibling(Nodeptr Expectedsubtree,Nodeptr RightSibling,Nodeptr x,int i);
-void RestructuringwithLeftSibling(Nodeptr Expectedsubtree,Nodeptr LeftSibling,Nodeptr x,int i);
-void DeleteFromInternalNode(Nodeptr x, int k, int i);
-Nodeptr RestructuringChildToDelete(Nodeptr x,int i);
+int FindPredecessorAndDelete(Nodeptr x);////Delete Predecessor of k From Left subtree x(Rightmost element of leftsubtree)
+int FindSuccessorAndDelete(Nodeptr x);////Delete Successor of k From Right subtree x(leftmost element of Rightsubtree)
+void Mergewithkeyk(Nodeptr y,int k, Nodeptr z,Nodeptr Root,int iKey);///Merge z to y using iKey th Key(k) from Root(Parent of y and z)  
+void RestructuringwithRightSibling(Nodeptr Expectedsubtree,Nodeptr RightSibling,Nodeptr x,int i);////Restructuring RightSibling (having atleast t keys )
+void RestructuringwithLeftSibling(Nodeptr Expectedsubtree,Nodeptr LeftSibling,Nodeptr x,int i);////Restructuring LeftSibling (having atleast t keys )
+void DeleteFromInternalNode(Nodeptr x, int k, int i);///Delete k(i th Key in x) from InterrnalNode x
+Nodeptr RestructuringChildToDelete(Nodeptr x,int i);///Restructuring Child(having only t-1 Keys ) to which we want to decent to find and delete k
+
 int main(void)
 {
     int InputKey=1,Key,n,i;
