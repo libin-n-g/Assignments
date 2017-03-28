@@ -326,8 +326,11 @@ void RestructuringwithRightSibling(Nodeptr Expectedsubtree,Nodeptr RightSibling,
     x->Keys[i-1] = RightSibling->Keys[0];
     for(j=0;j < RightSibling->NumOfKeys;j++)
     {
-        RightSibling->Keys[j] = RightSibling->Keys[j+1];
-        RightSibling->Keys[j+1] = 0;
+        if((j+1) < RightSibling->NumOfKeys)
+        {
+            RightSibling->Keys[j] = RightSibling->Keys[j+1];
+            RightSibling->Keys[j+1] = 0;
+        }
         RightSibling->chlidren[j] = RightSibling->chlidren[j+1];
     }
     RightSibling->NumOfKeys--;
