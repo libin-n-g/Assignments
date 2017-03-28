@@ -152,25 +152,30 @@ void SplitChild(Nodeptr x,int i)
     for(j=0;j < MinDegree-1;j++)
     {
         z->Keys[j] = y->Keys[j + MinDegree];
+        y->Keys[j + MinDegree] = 0;
     }
     if(!(y->ISLeaf))
     {
         for(j = 0;j < MinDegree;j++)
         {
             z->chlidren[j] = y->chlidren[j+MinDegree];
+            y->chlidren[j+MinDegree] = NULL;
         }
     }
     y->NumOfKeys = MinDegree - 1;
     for(j = x->NumOfKeys;j > (i-1);j--)
     {
-        x->chlidren[j+1]=x->chlidren[j];
+        x->chlidren[j+1] = x->chlidren[j];
+        x->chlidren[j] = NULL;
     }
     x->chlidren[i] = z;
     for(j = x->NumOfKeys-1 ; j > (i-2) ; j-- )
     {
         x->Keys[j+1] = x->Keys[j];
+        x->Keys[j] = 0;
     }
     x->Keys[i-1] = y->Keys[MinDegree-1];
+    y->Keys[MinDegree-1] = 0;
     x->NumOfKeys = x->NumOfKeys + 1;
 }
 void InsertNonFull(Nodeptr x,int k)
