@@ -51,7 +51,7 @@ int main(void)
     Vertexptr GraphNode=NULL;
     printf("\nEnter No of clauses in 2CNF \n");
     scanf("%d",&Num);
-    GraphNode = CreateNodes(2*Num+1);
+    GraphNode = CreateNodes(4*Num+1);
 
     if(GraphNode!=NULL)
     {
@@ -76,12 +76,12 @@ Vertexptr KosarajuAlgorithem(Vertexptr GraphNode,int Num)
     int X[100];
 
     GraphNode = InputCNFandConvert(GraphNode,Num,Maxindex);
-    ReverseGraph = MakeReverseGraph(GraphNode,2*Num+1);
+    ReverseGraph = MakeReverseGraph(GraphNode,4*Num+1);
     for(i = -(*Maxindex) ;i <= (*Maxindex) ; i++)
     {
-        if((ReverseGraph +Num + i)->visit == false && (ReverseGraph+ Num + i)->Valid == 1)
+        if((ReverseGraph + 2*Num + i)->visit == false && (ReverseGraph+ 2*Num + i)->Valid == 1)
         {
-            stack = DepthFirstSearchToMakeQueue((ReverseGraph + Num +i),stack);
+            stack = DepthFirstSearchToMakeQueue((ReverseGraph + 2*Num +i),stack);
         }
     }
     for(i=0;i < (*Maxindex);i++)
@@ -100,7 +100,7 @@ Vertexptr KosarajuAlgorithem(Vertexptr GraphNode,int Num)
     }
     for(i= 1 ; i <= (*Maxindex) ;i++)
     {
-        if((GraphNode + Num + i)->Component == (GraphNode + Num - i)->Component)// x xbar has same component==> No solution
+        if((GraphNode + 2*Num + i)->Component == (GraphNode + 2*Num - i)->Component)// x xbar has same component==> No solution
         {
             printf("\nThe Solution Doesnot Exist \n");
             return GraphNode;
@@ -133,6 +133,7 @@ Vertexptr CreateNodes(int Num)
             (Nodes+j)->nElement=j+1;
             (Nodes+j)->visit = false;
             (Nodes+j)->AdjacencyList=NULL;
+            (Nodes+j)->Valid = 0;
         }
         return Nodes;
     }
@@ -154,16 +155,16 @@ Vertexptr InputCNFandConvert(Vertexptr GraphNodes,  int Num,int* Maxindex)
     {
         scanf("%d",&u);
         scanf("%d",&v);
-        GraphNode1u = GraphNodes + Num + u; //+u
+        GraphNode1u = GraphNodes + 2*Num + u; //+u
         GraphNode1u->Valid = 1;
         GraphNode1u->nindexofX = u;
-        GraphNode2u = GraphNodes + Num - u; //-u
+        GraphNode2u = GraphNodes + 2*Num - u; //-u
         GraphNode2u->Valid = 1;
         GraphNode2u->nindexofX = -u;
-        GraphNode1v = GraphNodes + Num + v; //+v
+        GraphNode1v = GraphNodes + 2*Num + v; //+v
         GraphNode1v->Valid = 1;
         GraphNode1v->nindexofX = v;
-        GraphNode2v = GraphNodes + Num - v; //-v
+        GraphNode2v = GraphNodes + 2*Num - v; //-v
         GraphNode2v->Valid = 1;
         GraphNode2v->nindexofX = -v;
         GraphNode2u->AdjacencyList = CreatelistNode(GraphNode1v,GraphNode2u->AdjacencyList);
